@@ -19,5 +19,5 @@ install:
   - set Path=%CD%\winflexbison;%Path%
   - win_flex --version
 build_script:
-  - ".\build.ps1"
+  - "powershell ./build.ps1"
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
