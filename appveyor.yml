@@ -12,7 +12,7 @@ install:
   - python -m pip install scons==3.0.1
   - scons --version
   - set WINFLEXBISON_ARCHIVE=win_flex_bison-%WINFLEXBISON_VERSION%.zip
-  - if not exist "%WINFLEXBISON_ARCHIVE%" appveyor DownloadFile "https://sourceforge.net/projects/winflexbison/files/winflexbison3-latest.zip/download"
+  - if not exist "%WINFLEXBISON_ARCHIVE%" appveyor DownloadFile "https://sourceforge.net/projects/winflexbison/files/old_versions/%WINFLEXBISON_ARCHIVE%/download"
   - 7z x -y -owinflexbison\ "%WINFLEXBISON_ARCHIVE%" > nul
   - set Path=%CD%\winflexbison;%Path%
   - win_flex --version
