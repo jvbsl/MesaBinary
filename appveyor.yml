@@ -1,5 +1,7 @@
 image: Visual Studio 2017
-
+artifacts:
+    - path: opengl_win.zip
+      name: opengl windows
 init:
   - git config --global core.autocrlf input
 environment:
