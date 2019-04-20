@@ -9,11 +9,11 @@ Set-Location -Path mesa
 
 scons machine=x86_64 libgl-gdi
 
-Copy-Item build\windows-x86_64-debug\gallium\targets\libgl-gdi\ -Destination ..\build\x86_64 -Recurse
+Copy-Item "build\windows-x86_64-debug\gallium\targets\libgl-gdi\*" -Destination ..\build\x86_64 -Recurse
 
 scons machine=x86 libgl-gdi
 
-Copy-Item build\windows-x86-debug\gallium\targets\libgl-gdi\ -Destination ..\build\x86 -Recurse
+Copy-Item "build\windows-x86-debug\gallium\targets\libgl-gdi\*" -Destination ..\build\x86 -Recurse
 
 Set-Location -Path ..
 7z a opengl_win.zip build\
