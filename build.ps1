@@ -17,3 +17,4 @@ Copy-Item "build\windows-x86-debug\gallium\targets\libgl-gdi\*" -Destination ..\
 
 Set-Location -Path ..
 7z a opengl_win.zip build\
+7z a opengl_win_dll.zip build\**\*.dll
