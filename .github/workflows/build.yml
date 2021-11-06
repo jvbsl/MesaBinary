@@ -1,0 +1,43 @@
+name: Mesa Binary Build
+
+on:
+  workflow_dispatch:
+    inputs:
+  push:
+    branches:
+      - master
+      - develop
+      - feature/ghaction
+  pull_request:
+    branches:
+      - master
+      - develop
+jobs:
+  build:
+    env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix: 
+        os: [windows-latest]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup
+      run: |
+          python -m pip install Mako==1.0.7
+          # Install pywin32 extensions, needed by SCons
+          python -m pip install pypiwin32
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install scons==3.0.1
+          scons --version
+          set WINFLEXBISON_ARCHIVE=win_flex_bison-%WINFLEXBISON_VERSION%.zip
+          if not exist "%WINFLEXBISON_ARCHIVE%" appveyor DownloadFile "https://datapacket.dl.sourceforge.net/project/winflexbison/old_versions/%WINFLEXBISON_ARCHIVE%"
+          7z x -y -owinflexbison\ "%WINFLEXBISON_ARCHIVE%" > nul
+          set Path=%CD%\winflexbison;%Path%
+          win_flex --version
+    - name: Build
+      run: ./build.ps1
+      shell: pwsh
