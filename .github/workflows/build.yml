@@ -15,7 +15,6 @@ on:
 jobs:
   build:
     env:
-        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         WINFLEXBISON_VERSION: 2.5.15
     runs-on: ${{ matrix.os }}
     strategy:
@@ -27,18 +26,32 @@ jobs:
     - uses: actions/checkout@v1
     - name: Setup
       run: |
-          python -m pip install Mako==1.0.7
-          # Install pywin32 extensions, needed by SCons
-          python -m pip install pypiwin32
-          python -m pip install --upgrade pip setuptools wheel
-          python -m pip install scons==3.0.1
-          scons --version
-          set WINFLEXBISON_ARCHIVE=win_flex_bison-%WINFLEXBISON_VERSION%.zip
-          if not exist "%WINFLEXBISON_ARCHIVE%" wget "https://github.com/lexxmark/winflexbison/releases/download/v%WINFLEXBISON_VERSION%/%WINFLEXBISON_ARCHIVE%"
-          7z x -y -owinflexbison\ "%WINFLEXBISON_ARCHIVE%" > nul
-          set Path=%CD%\winflexbison;%Path%
+          python -m pip install Mako
+          $WINFLEXBISON_VERSION=$Env.WINFLEXBISON_VERSION
+          $WINFLEXBISON_ARCHIVE=win_flex_bison-$WINFLEXBISON_VERSION.zip
+          wget "https://github.com/lexxmark/winflexbison/releases/download/v$WINFLEXBISON_VERSION/$WINFLEXBISON_ARCHIVE" -OutFile $WINFLEXBISON_ARCHIVE
+          
+          7z x -y -owinflexbison\ "$WINFLEXBISON_ARCHIVE"
           win_flex --version
-      shell: cmd
-    - name: Build
-      run: ./build.ps1
+          New-Item -ItemType Directory -Force -Path build
+          New-Item -ItemType Directory -Force -Path build\x86
+          New-Item -ItemType Directory -Force -Path build\x86_64
       shell: pwsh
+    - name: Clone mesa
+      run: git clone https://gitlab.freedesktop.org/mesa/mesa.git
+    - name: Build 32-Bit
+      run: cmd "/K" '"$VCInstallDir\Auxiliary\Build\vcvars32.bat" && powershell ./build32.ps1'
+      shell: pwsh
+    - name: Build 64-Bit
+      run: cmd "/K" '"$VCInstallDir\Auxiliary\Build\vcvars64.bat" && powershell ./build64.ps1'
+      shell: pwsh
+    - name: 'Upload Full OpenGL'
+      uses: actions/upload-artifact@v2
+      with:
+        name: opengl_win
+        path: build/**
+    - name: 'Upload OpenGL Library only'
+      uses: actions/upload-artifact@v2
+      with:
+        name: opengl_win
+        path: build/**/*.dll
