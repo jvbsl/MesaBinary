@@ -38,9 +38,12 @@ jobs:
           New-Item -ItemType Directory -Force -Path build\x86
           New-Item -ItemType Directory -Force -Path build\x86_64
           
-          $MSBUILD_PATH=(Get-Item (Get-Command msbuild).Path).Directory
+          $MSBUILD_PATH=(Get-Item (Get-Command msbuild).Path)
+          $MSBUILD_PATH
+          $MSBUILD_PATH.Directory
+          $MSBUILD_PATH.Parent
           $VC_PATH=$MSBUILD_PATH.Parent.Parent.Parent
-          $VC_PATH
+          $VC_PATH=$MSBUILD_PATH.Parent.Parent.Parent
           echo "VCInstallDir=$VC_PATH" >> $env:GITHUB_ENV
       shell: pwsh
     - name: Clone mesa
