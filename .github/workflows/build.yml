@@ -35,6 +35,8 @@ jobs:
           New-Item -ItemType Directory -Force -Path build
           New-Item -ItemType Directory -Force -Path build\x86
           New-Item -ItemType Directory -Force -Path build\x86_64
+          
+          $VCInstallDir
       shell: pwsh
     - name: Clone mesa
       run: git clone https://gitlab.freedesktop.org/mesa/mesa.git
