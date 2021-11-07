@@ -26,6 +26,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Setup
       run: |
+          Set-PSDebug -Trace 1
           python -m pip install Mako
           $WINFLEXBISON_VERSION=$Env.WINFLEXBISON_VERSION
           $WINFLEXBISON_ARCHIVE="win_flex_bison-$WINFLEXBISON_VERSION.zip"
