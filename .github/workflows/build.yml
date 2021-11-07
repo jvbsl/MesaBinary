@@ -36,7 +36,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path build\x86
           New-Item -ItemType Directory -Force -Path build\x86_64
           
-          dir env:
+          where msbuild
       shell: pwsh
     - name: Clone mesa
       run: git clone https://gitlab.freedesktop.org/mesa/mesa.git
