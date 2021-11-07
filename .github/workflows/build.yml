@@ -40,7 +40,7 @@ jobs:
           
           $MSBUILD_PATH=(Get-Item (Get-Command msbuild).Path)
           $MSBUILD_PATH
-          $VC_PATH=(Get-Item (Get-Command msbuild).Path).Directory.Parent.Parent.Parent.FullPath
+          $VC_PATH=$MSBUILD_PATH.Parent.Parent.Parent.FullPath
           $VC_PATH
           echo "VCInstallDir=$VC_PATH" >> $env:GITHUB_ENV
       shell: pwsh
