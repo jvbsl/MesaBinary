@@ -38,16 +38,15 @@ jobs:
           New-Item -ItemType Directory -Force -Path build\x86
           New-Item -ItemType Directory -Force -Path build\x86_64
           
-          (Get-Command msbuild).Path
-          dir env:
+          echo "VCInstallDir=${((Get-Item (Get-Command msbuild).Path).Directory.Parent.Parent.Parent.FullPath}" >> $env:GITHUB_ENV
       shell: pwsh
     - name: Clone mesa
       run: git clone https://gitlab.freedesktop.org/mesa/mesa.git
     - name: Build 32-Bit
-      run: cmd "/K" '"$VCInstallDir\Auxiliary\Build\vcvars32.bat" && powershell ./build32.ps1'
+      run: cmd "/K" '"${{ env.VCInstallDir }}\VC\Auxiliary\Build\vcvars32.bat" && powershell ./build32.ps1'
       shell: pwsh
     - name: Build 64-Bit
-      run: cmd "/K" '"$VCInstallDir\Auxiliary\Build\vcvars64.bat" && powershell ./build64.ps1'
+      run: cmd "/K" '"${{ env.VCInstallDir }}\VC\Auxiliary\Build\vcvars64.bat" && powershell ./build64.ps1'
       shell: pwsh
     - name: 'Upload Full OpenGL'
       uses: actions/upload-artifact@v2
