@@ -28,6 +28,7 @@ jobs:
       run: |
           Set-PSDebug -Trace 1
           python -m pip install Mako
+          python -m pip install meson
           $WINFLEXBISON_VERSION="2.5.15"
           $WINFLEXBISON_ARCHIVE="win_flex_bison-$WINFLEXBISON_VERSION.zip"
           "https://github.com/lexxmark/winflexbison/releases/download/v$WINFLEXBISON_VERSION/$WINFLEXBISON_ARCHIVE"
@@ -40,11 +41,8 @@ jobs:
           
           $MSBUILD_PATH=(Get-Item (Get-Command msbuild).Path).Directory
           $VC_PATH=Split-Path $MSBUILD_PATH -Parent
-          $VC_PATH
           $VC_PATH=Split-Path $VC_PATH -Parent
-          $VC_PATH
           $VC_PATH=Split-Path $VC_PATH -Parent
-          $VC_PATH
           echo "VCInstallDir=$VC_PATH" >> $env:GITHUB_ENV
       shell: pwsh
     - name: Clone mesa

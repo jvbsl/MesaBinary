@@ -1,5 +1,5 @@
 $BISONFLEX=Join-Path -Path (Get-Location) -ChildPath "winflexbison"
-$ENV.Path += ";$BISONFLEX"
+$ENV:Path += ";$BISONFLEX"
 
 Set-Location -Path mesa
 
