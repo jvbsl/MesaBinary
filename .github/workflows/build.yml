@@ -32,7 +32,6 @@ jobs:
           Invoke-WebRequest -Uri "https://github.com/lexxmark/winflexbison/releases/download/v$WINFLEXBISON_VERSION/$WINFLEXBISON_ARCHIVE" -OutFile $WINFLEXBISON_ARCHIVE
           
           7z x -y -owinflexbison\ "$WINFLEXBISON_ARCHIVE"
-          win_flex --version
           New-Item -ItemType Directory -Force -Path build
           New-Item -ItemType Directory -Force -Path build\x86
           New-Item -ItemType Directory -Force -Path build\x86_64
