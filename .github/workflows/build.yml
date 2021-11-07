@@ -14,8 +14,6 @@ on:
       - develop
 jobs:
   build:
-    env:
-        WINFLEXBISON_VERSION: 2.5.15
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -28,7 +26,7 @@ jobs:
       run: |
           Set-PSDebug -Trace 1
           python -m pip install Mako
-          $WINFLEXBISON_VERSION=$Env.WINFLEXBISON_VERSION
+          $WINFLEXBISON_VERSION="2.5.15"
           $WINFLEXBISON_ARCHIVE="win_flex_bison-$WINFLEXBISON_VERSION.zip"
           "https://github.com/lexxmark/winflexbison/releases/download/v$WINFLEXBISON_VERSION/$WINFLEXBISON_ARCHIVE"
           Invoke-WebRequest -Uri "https://github.com/lexxmark/winflexbison/releases/download/v$WINFLEXBISON_VERSION/$WINFLEXBISON_ARCHIVE" -OutFile $WINFLEXBISON_ARCHIVE
