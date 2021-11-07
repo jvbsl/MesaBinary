@@ -61,5 +61,5 @@ jobs:
     - name: 'Upload OpenGL Library only'
       uses: actions/upload-artifact@v2
       with:
-        name: opengl_win
+        name: opengl_win_dll
         path: build/**/*.dll
