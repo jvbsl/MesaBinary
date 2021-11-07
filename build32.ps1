@@ -9,7 +9,7 @@ meson configure
 
 meson builddir/ --buildtype=release --backend=vs
 
-msbuild builddir/mesa.sln
+msbuild builddir/mesa.sln -m /p:Platform="Win32"
 
 Copy-Item "builddir\src\gallium\targets\libgl-gdi\*" -Exclude "*@@*" -Destination ..\build\x86 -Recurse
 
