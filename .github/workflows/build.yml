@@ -38,7 +38,11 @@ jobs:
           New-Item -ItemType Directory -Force -Path build\x86
           New-Item -ItemType Directory -Force -Path build\x86_64
           
-          echo "VCInstallDir=${((Get-Item (Get-Command msbuild).Path).Directory.Parent.Parent.Parent.FullPath}" >> $env:GITHUB_ENV
+          $MSBUILD_PATH=(Get-Item (Get-Command msbuild).Path)
+          $MSBUILD_PATH=
+          $VC_PATH=((Get-Item (Get-Command msbuild).Path).Directory.Parent.Parent.Parent.FullPath
+          $VC_PATH
+          echo "VCInstallDir=$VC_PATH" >> $env:GITHUB_ENV
       shell: pwsh
     - name: Clone mesa
       run: git clone https://gitlab.freedesktop.org/mesa/mesa.git
