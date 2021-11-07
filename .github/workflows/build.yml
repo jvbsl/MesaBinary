@@ -28,7 +28,7 @@ jobs:
       run: |
           python -m pip install Mako
           $WINFLEXBISON_VERSION=$Env.WINFLEXBISON_VERSION
-          $WINFLEXBISON_ARCHIVE=win_flex_bison-$WINFLEXBISON_VERSION.zip
+          $WINFLEXBISON_ARCHIVE="win_flex_bison-$WINFLEXBISON_VERSION.zip"
           wget "https://github.com/lexxmark/winflexbison/releases/download/v$WINFLEXBISON_VERSION/$WINFLEXBISON_ARCHIVE" -OutFile $WINFLEXBISON_ARCHIVE
           
           7z x -y -owinflexbison\ "$WINFLEXBISON_ARCHIVE"
