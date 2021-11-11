@@ -1,65 +1,58 @@
-name: Mesa Binary Build
+name: LLVM Build
 
 on:
   workflow_dispatch:
     inputs:
   push:
     branches:
-      - master
-      - develop
-      - feature/ghaction
+      - main
   pull_request:
     branches:
-      - master
-      - develop
+      - main
 jobs:
   build:
+        
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
-      matrix: 
+      matrix:
+        arch: [ x86 ]
         os: [windows-latest]
-
+        include:
+          - arch: x64
+            os: windows-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
     - name: Setup
       run: |
-          Set-PSDebug -Trace 1
-          python -m pip install Mako
-          python -m pip install meson
-          $WINFLEXBISON_VERSION="2.5.15"
-          $WINFLEXBISON_ARCHIVE="win_flex_bison-$WINFLEXBISON_VERSION.zip"
-          "https://github.com/lexxmark/winflexbison/releases/download/v$WINFLEXBISON_VERSION/$WINFLEXBISON_ARCHIVE"
-          Invoke-WebRequest -Uri "https://github.com/lexxmark/winflexbison/releases/download/v$WINFLEXBISON_VERSION/$WINFLEXBISON_ARCHIVE" -OutFile $WINFLEXBISON_ARCHIVE
-          
-          7z x -y -owinflexbison\ "$WINFLEXBISON_ARCHIVE"
-          New-Item -ItemType Directory -Force -Path build
-          New-Item -ItemType Directory -Force -Path build\x86
-          New-Item -ItemType Directory -Force -Path build\x86_64
-          
-          $MSBUILD_PATH=(Get-Item (Get-Command msbuild).Path).Directory
-          $VC_PATH=Split-Path $MSBUILD_PATH -Parent
-          $VC_PATH=Split-Path $VC_PATH -Parent
-          $VC_PATH=Split-Path $VC_PATH -Parent
-          echo "VCInstallDir=$VC_PATH" >> $env:GITHUB_ENV
+            git clone https://github.com/Microsoft/vcpkg.git
+            ./vcpkg/bootstrap-vcpkg.bat
       shell: pwsh
-    - name: Clone mesa
-      run: git clone https://gitlab.freedesktop.org/mesa/mesa.git
-    - name: Build 32-Bit
-      run: cmd "/K" '"${{ env.VCInstallDir }}\VC\Auxiliary\Build\vcvars32.bat" && powershell ./build32.ps1'
+    - name: Patch VCPKG for Release
+      run: |
+        Add-Content -Path ./vcpkg/triplets/community/x86-windows-static.cmake "`n`nset(VCPKG_BUILD_TYPE release)"
+        Add-Content -Path ./vcpkg/triplets/x64-windows-static.cmake "`n`nset(VCPKG_BUILD_TYPE release)"
+        Add-Content -Path ./vcpkg/triplets/x86-windows.cmake "`n`nset(VCPKG_BUILD_TYPE release)"
+        Add-Content -Path ./vcpkg/triplets/x64-windows.cmake "`n`nset(VCPKG_BUILD_TYPE release)"
+        Set-Content -Path ./vcpkg/scripts/toolchains/windows.cmake ((Get-Content -path ./vcpkg/scripts/toolchains/windows.cmake -Raw) -replace '/Z7','')
       shell: pwsh
-    - name: Build 64-Bit
-      run: cmd "/K" '"${{ env.VCInstallDir }}\VC\Auxiliary\Build\vcvars64.bat" && powershell ./build64.ps1'
+    - name: Compile LLVM x86
+      run: ./vcpkg/vcpkg.exe install mesa[llvm]:x86-windows
       shell: pwsh
-    - name: 'Upload Full OpenGL'
+      if: matrix.arch == 'x86'
+    - name: Compile LLVM x64
+      run: ./vcpkg/vcpkg.exe install mesa[llvm]:x64-windows
+      shell: pwsh
+      if: matrix.arch == 'x64'
+    - name: Upload x86 build
       uses: actions/upload-artifact@v2
       with:
-        name: opengl_win
-        path: build/**
-    - name: 'Upload OpenGL Library only'
+        name: mesa_x86-windows
+        path: ./vcpkg/installed/x86-windows/**/*
+      if: matrix.arch == 'x86'
+    - name: Upload x64 build
       uses: actions/upload-artifact@v2
       with:
-        name: opengl_win_dll
-        path: build/**/*.dll
+        name: mesa_x64-windows
+        path: ./vcpkg/installed/x64-windows/**/*
+      if: matrix.arch == 'x64'
