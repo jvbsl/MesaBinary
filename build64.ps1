@@ -1,5 +1,10 @@
 $BISONFLEX=Join-Path -Path (Get-Location) -ChildPath "winflexbison"
-$ENV:Path += ";$BISONFLEX"
+$LLVM=Join-Path -Path (Get-Location) -ChildPath "llvm/tools/llvm"
+$ENV:Path += ";$BISONFLEX;$LLVM"
+
+Invoke-WebRequest "https://github.com/jvbsl/llvm-win-bin/releases/download/12.0.1/llvm_x64-windows-static.zip" -Destination "llvm.zip"
+
+7z x "llvm.zip"
 
 Set-Location -Path mesa
 
@@ -7,7 +12,7 @@ git clean -xdf
 
 meson configure
 
-meson builddir/ --buildtype=release --backend=vs
+meson builddir/ -D gallium-drivers=swrast --buildtype=release --backend=vs
 
 msbuild builddir/mesa.sln -m
 
