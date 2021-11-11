@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - feature/ghaction
   pull_request:
     branches:
       - main
