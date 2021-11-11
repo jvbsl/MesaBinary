@@ -4,11 +4,9 @@ $ENV:Path += ";$BISONFLEX;$LLVM"
 
 Invoke-WebRequest "https://github.com/jvbsl/llvm-win-bin/releases/download/12.0.1/llvm_x86-windows-static.zip" -OutFile "llvm.zip"
 
-7z x "llvm.zip"
-ls llvm
-if (Test-Path -Path $LLVM) {
-  exit 1
-}
+New-item -Path "llvm" -ItemType "directory" -Force
+
+7z x "llvm.zip" -ollvm
 
 Set-Location -Path mesa
 
