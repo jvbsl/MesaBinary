@@ -2,7 +2,7 @@ $BISONFLEX=Join-Path -Path (Get-Location) -ChildPath "winflexbison"
 $LLVM=Join-Path -Path (Get-Location) -ChildPath "llvm/tools/llvm"
 $ENV:Path += ";$BISONFLEX;$LLVM"
 
-Invoke-WebRequest "https://github.com/jvbsl/llvm-win-bin/releases/download/12.0.1/llvm_x64-windows-static.zip" -Destination "llvm.zip"
+Invoke-WebRequest "https://github.com/jvbsl/llvm-win-bin/releases/download/12.0.1/llvm_x64-windows-static.zip" -OutFile "llvm.zip"
 
 7z x "llvm.zip"
 
